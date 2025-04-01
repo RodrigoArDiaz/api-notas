@@ -28,7 +28,12 @@ class UsuarioController extends Controller
      */
     public function store(StoreUsuarioRequest $request)
     {
-        //
+        try {
+            $usuario = Usuario::create($request->validated());
+            return response()->json($usuario, Response::HTTP_CREATED);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error al crear el usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
