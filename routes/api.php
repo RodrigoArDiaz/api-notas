@@ -18,3 +18,11 @@ Route::group(['prefix' => 'usuarios'], function () {
     Route::put('/{id}', [UsuarioController::class, 'update']);
     Route::delete('/{id}', [UsuarioController::class, 'destroy']);
 });
+
+Route::group(['prefix' => 'notas'], function () {
+    Route::get('/', [NotaController::class, 'index']);
+    Route::post('/', [NotaController::class, 'store']); 
+    Route::get('/{id}', [NotaController::class, 'show']);
+    Route::put('/{id}', [NotaController::class, 'update']);
+    Route::delete('/{id}', [NotaController::class, 'destroy']);
+});
