@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUsuarioRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
 use App\Models\Usuario;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 
 class UsuarioController extends Controller
@@ -39,9 +40,16 @@ class UsuarioController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Usuario $usuario)
+    public function show(string $id)
     {
-        //
+        try {
+            $usuario = Usuario::findOrFail($id);
+            return response()->json($usuario, Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Usuario no encontrado'], Response::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error al obtener el usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
