@@ -57,9 +57,19 @@ class NotaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateNotaRequest $request, Nota $nota)
+    public function update(UpdateNotaRequest $request, string $id)
     {
-        //
+        try {
+            $nota = Nota::findOrFail($id);
+            $nota->update($request->validated());
+            $nota->load('usuario');
+            return response()->json($nota, HttpResponse::HTTP_OK);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Nota no encontrada.'], HttpResponse::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error mostrando nota.'], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+        } 
     }
 
     /**
