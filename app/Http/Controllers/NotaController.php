@@ -6,6 +6,7 @@ use App\Http\Requests\StoreNotaRequest;
 use App\Http\Requests\UpdateNotaRequest;
 use App\Models\Nota;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response as HttpResponse;
 
 class NotaController extends Controller
@@ -39,9 +40,18 @@ class NotaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Nota $nota)
+    public function show(string $id)
     {
-        //
+        try {
+            $nota = Nota::findOrFail($id);
+            $nota->load('usuario');
+            return response()->json($nota, HttpResponse::HTTP_OK);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Nota no encontrada.'], HttpResponse::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error mostrando nota.'], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
