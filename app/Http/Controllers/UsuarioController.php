@@ -55,9 +55,21 @@ class UsuarioController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUsuarioRequest $request, Usuario $usuario)
+    public function update(UpdateUsuarioRequest $request, string $id)
     {
-        //
+        try {
+            $usuario = Usuario::findOrFail($id);
+            $usuario->update($request->validated());
+            return response()->json([
+                'usuario' => $usuario,
+                'message' => 'Usuario actualizado correctamente'
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Usuario no encontrado'], Response::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error al obtener el usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        
     }
 
     /**
