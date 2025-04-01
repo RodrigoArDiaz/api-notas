@@ -75,8 +75,18 @@ class UsuarioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Usuario $usuario)
+    public function destroy(string $id)
     {
-        //
+        try {
+            $usuario = Usuario::findOrFail($id);
+            $usuario->delete();
+            return response()->json([
+                'message' => 'Usuario eliminado correctamente'
+            ], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Usuario no encontrado'], Response::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error al obtener el usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
