@@ -19,7 +19,7 @@ class NotaController extends Controller
             $notas = Nota::all()->load('usuario');
             return response()->json($notas, 200);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Error listando notas: '], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => 'Error listando notas.'], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -28,7 +28,12 @@ class NotaController extends Controller
      */
     public function store(StoreNotaRequest $request)
     {
-        //
+        try {
+            $nota = Nota::create($request->validated());
+            return response()->json($nota, HttpResponse::HTTP_CREATED);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error creando nota.'], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
