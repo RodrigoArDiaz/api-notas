@@ -75,8 +75,17 @@ class NotaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Nota $nota)
+    public function destroy(string $id)
     {
-        //
+        try {
+            $nota = Nota::findOrFail($id);
+            $nota->delete();
+            return response()->json(['message' => 'Nota eliminada.'], HttpResponse::HTTP_OK);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Nota no encontrada.'], HttpResponse::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error eliminando nota.'], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+        } 
     }
 }
